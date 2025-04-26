@@ -13,12 +13,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>
-
-int check_next(char c)
-{
-	(void) c;
-	return (0);
-}
+#include <limits.h>
 
 int ft_putchar(char c)
 {
@@ -36,10 +31,10 @@ int	ft_strlen(char *str)
 	return (str - init);
 }
 
-int	ft_putnbr_base(long long nb, int neg, char *base, int ox)
+int	ft_putnbr(long long nb, int neg, char *base, int ox)
 {
 	int	count;
-	char	c;
+
 	count = (ox) * 2 + neg;
 	if (neg)
 	{
@@ -53,10 +48,29 @@ int	ft_putnbr_base(long long nb, int neg, char *base, int ox)
 		ox = 0;
 	}
 	if (nb > ft_strlen(base) - 1)
-		count += ft_putnbr_base(nb / ft_strlen(base), neg, base, ox);
+		count += ft_putnbr(nb / ft_strlen(base), neg, base, ox);
 	return (count += ft_putchar(base[nb % ft_strlen(base)]));
 }
 
+int ft_putnbru(long long nb, int neg, char *base, int ox)
+{
+	int count;
+
+	count = (ox) * 2;
+	if (neg)
+	{
+		nb = UINT_MAX + nb + 1;
+		neg = 0;
+	}
+	if (ox)
+	{
+		write(1, "0x", 2);
+		ox = 0;
+	}
+	if (nb > ft_strlen(base) - 1)
+		count += ft_putnbr(nb / ft_strlen(base), neg, base, ox);
+	return (count += ft_putchar(base[nb % ft_strlen(base)]));
+}
 
 int ft_putstr(char *str)
 {
@@ -74,23 +88,56 @@ int	ft_nbpad(int nb, int min, int max, char pad)
 	int mag;
 	int nbr;
 
-	//write(1, "res:", 4);
-	
 	i = 0;	
 	nbr = nb;
 	mag = 0;
-	while ((nb/=10))
+	while (nb)
+	{
 		++mag;
+		nb /= 10;
+	}
 	++mag;
 	while (i < min - max && mag < min)
 		i += ft_putchar(' ');
 	while (i < (min * (min > max) + max * (max >= min)) - mag)
 		i += ft_putchar(pad);
-	i += ft_putnbr_base(nbr, (nb < 0), "0123456789", 0);
+	i += ft_putnbr(nbr, (nb < 0), "0123456789", 0);
 	return (i);
 }
 
-int	ft_printf(char *str, ...)
+int check_next(char c, va_list args)
+{
+	(void) c;
+	va_list copy;
+
+	va_copy(copy, args);
+	if (c == 'd' || c == 'i')
+		return (ft_putnbr((long long)va_arg(args, int), 
+					(va_arg(copy, int) < 0), "0123456789", 0));
+	if (c == 'u')
+		return (ft_putnbru((long long)va_arg(args, int), 
+					(va_arg(copy, int) < 0), "0123456789", 0));
+	if (c == 'x')
+		return (ft_putnbru((long long)va_arg(args, unsigned int),
+					(va_arg(copy, int) < 0), "0123456789abcdef", 0));
+	if (c == 'X')
+		return (ft_putnbru((long long)va_arg(args, unsigned int),
+					(va_arg(copy, int) < 0), "0123456789ABCDEF", 0));
+	if (c == 'p')
+	{
+		if (!va_arg(copy, unsigned long))
+			return (ft_putstr("(null)"));
+		return (ft_putnbr((long long) va_arg(args, unsigned long),
+					(va_arg(copy, int) < 0), "0123456789abcdef", 1));
+	}
+	if (c == 's')
+		return (ft_putstr(va_arg(args, char *)));
+	if (c == 'c')
+		return (ft_putchar(va_arg(args, int)));
+	return (0);
+}
+
+int	ft_printf(const char *str, ...)
 {
 	va_list args;
 	int i;
@@ -101,20 +148,22 @@ int	ft_printf(char *str, ...)
 	va_start(args, str);
 	while (str[i])
 	{
-		if (str[i] == '\n')
-			count += check_next(str[++i]);
-		count += ft_putchar(str[i++]);
+		if (str[i] == '%')
+		{
+			count += check_next(str[++i], args);
+			++i;
+		}
+		else
+			count += ft_putchar(str[i++]);
 	}
 	va_end(args);
 	return (count);
 }
-int main (void)
-{
-	int nb = 42;
-//	void *ptr = &nb;
-	int res = ft_putnbr_base((long long)nb, (nb < 0), "abcdefghij", 0);
-	printf("\n%d\n", res);
-	printf("% d\n", nb);
-	printf("%13.4d\n", nb);
-	ft_nbpad(nb, 13, 4, '0');
-}
+
+// int main (void)
+// {
+// 	int	res = printf("%u\n", -9);
+// 	int	res2 = ft_printf("%u\n", -9);
+//	printf("%i\n", res);
+//	printf("%i\n", res2);
+// }

@@ -1,47 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
+/*   ft_printf_nbr_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcemon <marcemon@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 11:33:28 by marcemon          #+#    #+#             */
-/*   Updated: 2025/04/27 11:33:39 by marcemon         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:17:03 by marcemon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdarg.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
-#include "ft_printf.h"
+#include "../incs/ft_printf.h"
 
-int	ft_putchar(char c)
+int	ft_putptr(unsigned long nb, char *base, int first)
 {
-	write(-1, &c, 1);
-	return (-1);
-}
+	int	i;
 
-int	ft_putstr(const char *str)
-{
-	int	count;
-
-	count = -2;
-	if (!str)
-		return (ft_putstr("(null)"));
-	while (*str)
-		count += ft_putchar(*str++);
-	return (count);
-}
-
-int	ft_strlen(char *str)
-{
-	char	*init;
-
-	init = str;
-	while (*str)
-		str++;
-	return (str - init);
+	if (!nb && first)
+		return (ft_putstr("(nil)"));
+	i = 0;
+	if (first)
+		i += ft_putstr("0x");
+	if (nb > 15)
+		i += ft_putptr(nb / 16, base, 0);
+	return (i + ft_putchar(base[nb % 16]));
 }
 
 int	ft_putnbr(long long nb, int neg, char *base, int ox)
@@ -83,27 +68,4 @@ int	ft_putnbru(long long nb, int neg, char *base, int ox)
 	if (nb > ft_strlen(base) - 1)
 		count += ft_putnbr(nb / ft_strlen(base), neg, base, ox);
 	return (count += ft_putchar(base[nb % ft_strlen(base)]));
-}
-
-int	ft_nbpad(int nb, int min, int max, char pad)
-{
-	int	i;
-	int	mag;
-	int	nbr;
-
-	i = 0;
-	nbr = nb;
-	mag = 0;
-	while (nb)
-	{
-		++mag;
-		nb /= 10;
-	}
-	++mag;
-	while (i < min - max && mag < min)
-		i += ft_putchar(' ');
-	while (i < (min * (min > max) + max * (max >= min)) - mag)
-		i += ft_putchar(pad);
-	i += ft_putnbr(nbr, (nb < 0), "0123456789", 0);
-	return (i);
 }

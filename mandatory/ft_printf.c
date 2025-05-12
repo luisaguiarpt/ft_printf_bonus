@@ -6,15 +6,15 @@
 /*   By: marcemon <marcemon@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:25:19 by marcemon          #+#    #+#             */
-/*   Updated: 2025/04/27 11:32:23 by marcemon         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:13:37 by marcemon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../incs/ft_printf.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
-#include "ft_printf.h"
 
 int	check_next(char c, va_list args)
 {
@@ -34,8 +34,7 @@ int	check_next(char c, va_list args)
 		return (ft_putnbru((long long)va_arg(args, unsigned int),
 				(va_arg(copy, unsigned int) < 0), "0123456789ABCDEF", 0));
 	if (c == 'p')
-		return (ft_putnbr((long long) va_arg(args, unsigned long),
-				(va_arg(copy, unsigned long) < 0), "0123456789abcdef", 1));
+		return (ft_putptr(va_arg(args, unsigned long), "0123456789abcdef", 1));
 	if (c == 's')
 		return (ft_putstr(va_arg(args, char *)));
 	if (c == 'c')
@@ -67,14 +66,3 @@ int	ft_printf(const char *str, ...)
 	va_end(args);
 	return (count);
 }
-
-// int main (void)
-// {
-// 	int	res = printf("%u\n", -9);
-// 	int	res2 = ft_printf("%u\n", -9);
-// 	void *ptr = &res;
-// 	printf("%i\n", res);
-//  	printf("%i\n", res2);
-//  	ft_printf("ours: %p\n", ptr);
-//  	printf("sys: %p\n", ptr);
-// }

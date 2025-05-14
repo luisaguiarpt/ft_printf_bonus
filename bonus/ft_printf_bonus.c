@@ -6,7 +6,7 @@
 /*   By: marcemon <marcemon@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 21:30:02 by marcemon          #+#    #+#             */
-/*   Updated: 2025/05/12 13:21:13 by marcemon         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:39:50 by marcemon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,9 @@ int	ft_printf(const char *format, ...)
 	int		i;
 	int		count;
 
-	flags = set_to_zero();
 	if (!format)
 		return (-1);
+	flags = set_to_zero();
 	va_start(args, format);
 	i = 0;
 	count = 0;

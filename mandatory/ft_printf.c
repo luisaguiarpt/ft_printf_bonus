@@ -6,7 +6,7 @@
 /*   By: marcemon <marcemon@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 15:25:19 by marcemon          #+#    #+#             */
-/*   Updated: 2025/05/10 17:13:37 by marcemon         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:39:07 by marcemon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ int	ft_printf(const char *str, ...)
 	int		i;
 	int		count;
 
+	if (!str)
+		return (-1);
 	i = 0;
 	count = 0;
 	va_start(args, str);

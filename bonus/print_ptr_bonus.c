@@ -6,7 +6,7 @@
 /*   By: marcemon <marcemon@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 21:30:02 by marcemon          #+#    #+#             */
-/*   Updated: 2025/04/27 19:58:54 by marcemon         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:40:42 by marcemon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,8 @@ int	print_ptr(void *ptr, t_flags flags)
 {
 	if (flags.align)
 		flags.zero = 0;
-	if (!ptr && flags.precision < 6)
-	{
-		flags.precision = 6;
+	if (!ptr)
 		return (print_str("(nil)", flags));
-	}
 	if (flags.align)
 		return (align_ptr((unsigned long) ptr, "0123456789abcdef", flags));
 	return (no_align_ptr((unsigned long) ptr, "0123456789abcdef", flags));

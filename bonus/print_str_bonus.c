@@ -6,7 +6,7 @@
 /*   By: marcemon <marcemon@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 21:30:02 by marcemon          #+#    #+#             */
-/*   Updated: 2025/04/27 19:58:54 by marcemon         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:41:03 by marcemon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,10 @@ int	print_str(char *str, t_flags flags)
 	if (flags.align)
 		flags.zero = 0;
 	if (!str && flags.precision < 6)
+	{
+		str = "(null)";
 		flags.precision = 0;
+	}
 	if (!str)
 		str = "(null)";
 	if (flags.align)
